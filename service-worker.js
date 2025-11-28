@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mess-menu-v1';
+const CACHE_NAME = 'mess-menu-v2';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -9,6 +9,8 @@ const ASSETS_TO_CACHE = [
 ];
 
 self.addEventListener('install', (event) => {
+    // Force the waiting service worker to become the active service worker.
+    self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
@@ -63,6 +65,9 @@ self.addEventListener('activate', (event) => {
                     }
                 })
             );
+        }).then(() => {
+            // Tell the active service worker to take control of the page immediately.
+            return self.clients.claim();
         })
     );
 });
