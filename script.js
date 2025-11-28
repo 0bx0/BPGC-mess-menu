@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             section.id = `meal-${category.toLowerCase()}`;
 
             // Check if active
-            if (isMealActive(category) && viewDate.toDateString() === new Date().toDateString()) {
+            if (isMealActive(category)) {
                 section.classList.add('active-meal');
             }
 
@@ -150,10 +150,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check if meal is active or upcoming
     const isMealActive = (category) => {
-        return category === getActiveMealCategory();
+        const state = getActiveMealState();
+        if (state.category !== category) return false;
+
+        const today = new Date();
+        const isViewToday = viewDate.toDateString() === today.toDateString();
+
+        if (state.isNextDay) {
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            return viewDate.toDateString() === tomorrow.toDateString();
+        } else {
+            return isViewToday;
+        }
     };
 
-    const getActiveMealCategory = () => {
+    const getActiveMealState = () => {
         const now = new Date();
         const currentHours = now.getHours();
         const currentMinutes = now.getMinutes();
@@ -167,20 +179,27 @@ document.addEventListener('DOMContentLoaded', () => {
             const endTime = endH * 60 + endM;
 
             if (currentTime < endTime) {
-                return category;
+                return { category, isNextDay: false };
             }
         }
-        return null; // All meals done for the day
+        return { category: 'Breakfast', isNextDay: true };
     };
 
     const scrollToActiveMeal = () => {
-        // Only scroll if viewing today
-        if (viewDate.toDateString() !== new Date().toDateString()) return;
+        const state = getActiveMealState();
+        const today = new Date();
 
-        const activeCategory = getActiveMealCategory();
+        let shouldScroll = false;
+        if (state.isNextDay) {
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            if (viewDate.toDateString() === tomorrow.toDateString()) shouldScroll = true;
+        } else {
+            if (viewDate.toDateString() === today.toDateString()) shouldScroll = true;
+        }
 
-        if (activeCategory) {
-            const section = document.getElementById(`meal-${activeCategory.toLowerCase()}`);
+        if (shouldScroll) {
+            const section = document.getElementById(`meal-${state.category.toLowerCase()}`);
             if (section) {
                 // Ensure class is added
                 document.querySelectorAll('.meal-section').forEach(s => s.classList.remove('active-meal'));
@@ -189,12 +208,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Add indicator if missing
                 const title = section.querySelector('.meal-title');
                 if (title && !title.querySelector('.active-indicator')) {
-                    title.innerHTML = `<span class="active-indicator"></span>${activeCategory}`;
+                    title.innerHTML = `<span class="active-indicator"></span>${state.category}`;
                 }
 
                 setTimeout(() => {
                     section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 500); // Increased timeout to ensure rendering is done
+                }, 500);
             }
         }
     };
