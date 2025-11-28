@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(err => {
             console.error('Error loading menu:', err);
-            menuContainer.innerHTML = '<p style="text-align:center; color: var(--danger)">Failed to load menu. Please ensure you are running this on a local server.</p>';
+            menuContainer.innerHTML = '<p style="text-align:center; color: var(--danger)">Failed to load menu. Please contact Debraj</p>';
         });
 
     // Render Menu
@@ -200,14 +200,53 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Event Listeners
+    // Helper to find visible meal
+    const getVisibleMealCategory = () => {
+        const sections = document.querySelectorAll('.meal-section');
+        let visibleCategory = null;
+        let minDistance = Infinity;
+
+        sections.forEach(section => {
+            const rect = section.getBoundingClientRect();
+            // Distance from top of viewport (considering sticky header offset approx 150px)
+            const distance = Math.abs(rect.top - 150);
+            if (distance < minDistance) {
+                minDistance = distance;
+                const id = section.id.replace('meal-', '');
+                visibleCategory = id.charAt(0).toUpperCase() + id.slice(1);
+            }
+        });
+        return visibleCategory;
+    };
+
+    const scrollToCategory = (category) => {
+        if (!category) return;
+        const section = document.getElementById(`meal-${category.toLowerCase()}`);
+        if (section) {
+            const headerOffset = 160;
+            const elementPosition = section.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: "instant"
+            });
+        }
+    };
+
+    // Event Listeners
     prevBtn.addEventListener('click', () => {
+        const currentCategory = getVisibleMealCategory();
         viewDate.setDate(viewDate.getDate() - 1);
         renderMenu();
+        if (currentCategory) scrollToCategory(currentCategory);
     });
 
     nextBtn.addEventListener('click', () => {
+        const currentCategory = getVisibleMealCategory();
         viewDate.setDate(viewDate.getDate() + 1);
         renderMenu();
+        if (currentCategory) scrollToCategory(currentCategory);
     });
 
 });
