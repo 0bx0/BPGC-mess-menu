@@ -271,14 +271,57 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Register Service Worker
+// Register Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-            .then(registration => {
-                console.log('ServiceWorker registration successful with scope: ', registration.scope);
-            })
-            .catch(err => {
-                console.log('ServiceWorker registration failed: ', err);
+        navigator.serviceWorker.register('service-worker.js').then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+
+            registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                console.log('ServiceWorker update found');
+
+                newWorker.addEventListener('statechange', () => {
+                    console.log('ServiceWorker state changed:', newWorker.state);
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        // New update available
+                        showUpdateNotification();
+                    }
+                });
             });
+        }).catch(err => {
+            console.log('ServiceWorker registration failed: ', err);
+        });
+
+        // Handle controller change (reload when new worker takes over)
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (!refreshing) {
+                refreshing = true;
+                window.location.reload();
+            }
+        });
     });
+}
+
+function showUpdateNotification() {
+    const notification = document.getElementById('update-notification');
+    const updateBtn = document.getElementById('update-btn');
+
+    if (notification && updateBtn) {
+        notification.classList.remove('hidden');
+
+        updateBtn.addEventListener('click', () => {
+            // Skip waiting on the waiting service worker
+            if (navigator.serviceWorker.getRegistration) {
+                navigator.serviceWorker.getRegistration().then(reg => {
+                    if (reg && reg.waiting) {
+                        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                    } else {
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+    }
 }

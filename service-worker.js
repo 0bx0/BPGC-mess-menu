@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mess-menu-v6';
+const CACHE_NAME = 'mess-menu-v7';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -9,8 +9,8 @@ const ASSETS_TO_CACHE = [
 ];
 
 self.addEventListener('install', (event) => {
-    // Force the waiting service worker to become the active service worker.
-    self.skipWaiting();
+    // Skip waiting is now manual via message or auto if preferred, but let's keep it manual for the notification flow
+    // self.skipWaiting(); // Removed to allow "Update" button to trigger it
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
@@ -18,6 +18,12 @@ self.addEventListener('install', (event) => {
                 return cache.addAll(ASSETS_TO_CACHE);
             })
     );
+});
+
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
 });
 
 self.addEventListener('fetch', (event) => {
