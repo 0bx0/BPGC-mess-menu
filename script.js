@@ -276,33 +276,9 @@ if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('service-worker.js')
             .then(registration => {
                 console.log('ServiceWorker registration successful with scope: ', registration.scope);
-
-                // Check for updates periodically
-                setInterval(() => {
-                    registration.update();
-                }, 60 * 60 * 1000); // Check every hour
-
-                registration.onupdatefound = () => {
-                    const newWorker = registration.installing;
-                    newWorker.onstatechange = () => {
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            // New update available
-                            console.log('New update available');
-                        }
-                    };
-                };
             })
             .catch(err => {
                 console.log('ServiceWorker registration failed: ', err);
             });
-
-        // Refresh page when new service worker takes control
-        let refreshing = false;
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-            if (!refreshing) {
-                refreshing = true;
-                window.location.reload();
-            }
-        });
     });
 }
