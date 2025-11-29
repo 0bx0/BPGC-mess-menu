@@ -12,7 +12,7 @@ A Progressive Web App (PWA) to view the mess menu for BITS Pilani Goa Campus (BP
 
 ## Usage
 
-1. Open the [web app](https://debraj-ghosh.github.io/BPGC-mess-menu/) (replace with actual URL if different).
+1. Open the [web app](https://messmenu.bpgc.in)
 2. The current day's menu will be displayed.
 3. Use the arrow buttons to navigate between days.
 4. Click "Update" if a notification appears for a new version.
