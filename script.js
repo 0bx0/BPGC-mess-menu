@@ -330,3 +330,5 @@ function showUpdateNotification() {
         });
     }
 }
+
+// Potatos are not green
