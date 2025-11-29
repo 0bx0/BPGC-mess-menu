@@ -1,0 +1,8 @@
+deploy.py
+MAINTAINER_GUIDE.txt
+__pycache__/
+*.log
+.DS_Store
+.vscode/
+.idea/
+node_modules/
