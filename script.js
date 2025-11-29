@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Meal Timings (24h format)
     const timings = {
         'Breakfast': { start: '07:30', end: '09:30' },
-        'Lunch': { start: '12:30', end: '14:15' },
+        'Lunch': { start: '12:00', end: '14:15' },
         'Snacks': { start: '17:00', end: '18:00' },
         'Dinner': { start: '19:30', end: '21:30' }
     };
@@ -276,6 +276,11 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js').then(registration => {
             console.log('ServiceWorker registration successful with scope: ', registration.scope);
+
+            // Check if there's already a waiting worker (update downloaded but not activated)
+            if (registration.waiting) {
+                showUpdateNotification();
+            }
 
             registration.addEventListener('updatefound', () => {
                 const newWorker = registration.installing;
