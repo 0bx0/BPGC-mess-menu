@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mess-menu-v17';
+const CACHE_NAME = 'mess-menu-v18';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
