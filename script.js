@@ -332,24 +332,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- NEW: Swipe Gestures ---
     let touchStartX = 0;
+    let touchStartY = 0;
     let touchEndX = 0;
+    let touchEndY = 0;
 
     document.addEventListener('touchstart', e => {
         touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
     }, { passive: true });
 
     document.addEventListener('touchend', e => {
         touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
         handleSwipe();
     }, { passive: true });
 
     function handleSwipe() {
-        const diff = touchEndX - touchStartX;
-        const swipeThreshold = 50;
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+        const swipeThreshold = 120; // Increased threshold
         
-        // Ensure we only swipe horizontally
-        if (Math.abs(diff) > swipeThreshold) {
-            if (diff > 0) {
+        // Ensure horizontal swipe is significant and much larger than vertical movement
+        if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > Math.abs(diffY) * 2) {
+            if (diffX > 0) {
                 // Swiped right -> go to previous day
                 prevBtn.click();
             } else {
