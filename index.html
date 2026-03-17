@@ -27,6 +27,7 @@
 </head>
 
 <body>
+    <div class="bg-glow"></div>
     <div class="app-container">
         <header class="app-header">
             <h1 id="day-display">Loading...</h1>
@@ -53,6 +54,24 @@
             <!-- Menu items will be injected here -->
             <div class="loading-spinner"></div>
         </main>
+
+        <div id="pwa-prompt" class="pwa-prompt" aria-hidden="true">
+            <p>Get the App! 🚀</p>
+            <button id="pwa-install-btn" class="pwa-btn">Install</button>
+            <button id="pwa-close-btn" class="pwa-close-btn" aria-label="Close message">&times;</button>
+        </div>
+
+        <div id="pwa-modal" class="pwa-modal" aria-hidden="true">
+            <div class="pwa-modal-content">
+                <h2>Install Mess Menu App</h2>
+                <p>Add this app to your device for quick access and offline use:</p>
+                <ol>
+                    <li>Tap the <strong>Share</strong> icon or browser menu.</li>
+                    <li>Select <strong>Add to Home Screen</strong>.</li>
+                </ol>
+                <button id="pwa-modal-close" class="pwa-btn">Got it</button>
+            </div>
+        </div>
 
         <div id="update-notification" class="update-notification hidden">
             <p>New update available!</p>

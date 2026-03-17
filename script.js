@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const categories = ['Breakfast', 'Lunch', 'Snacks', 'Dinner'];
 
         categories.forEach(category => {
-            const items = menuData.filter(item => item.Category === category);
+            const items = menuData.filter(item => item['Day'] === category);
             if (items.length === 0) return;
 
             const section = document.createElement('div');
@@ -126,10 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const row = document.createElement('div');
                 row.className = 'menu-item';
 
-                const type = document.createElement('span');
-                type.className = 'item-type';
-                type.textContent = item['Item Type'];
-
                 const name = document.createElement('span');
                 name.className = 'item-name';
                 // Get the value for the specific day
@@ -137,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!foodItem || foodItem === '-') foodItem = 'Not Available';
                 name.textContent = foodItem;
 
-                row.appendChild(type);
                 row.appendChild(name);
                 card.appendChild(row);
             });
@@ -145,6 +140,33 @@ document.addEventListener('DOMContentLoaded', () => {
             section.appendChild(header);
             section.appendChild(card);
             menuContainer.appendChild(section);
+        });
+
+        // Setup Intersection Observer for Dynamic Background Glow
+        setupBackgroundObserver();
+    };
+
+    // Observer to track which meal section is currently visible to change the BG blur
+    const setupBackgroundObserver = () => {
+        const sections = document.querySelectorAll('.meal-section');
+        const observerOptions = {
+            root: null,
+            rootMargin: '-10% 0px -40% 0px',
+            threshold: 0.1
+        };
+
+        const mealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const category = entry.target.id.replace('meal-', '');
+                    const formattedCategory = category.charAt(0).toUpperCase() + category.slice(1);
+                    document.body.setAttribute('data-scroll-meal', formattedCategory);
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            mealObserver.observe(section);
         });
     };
 
@@ -267,6 +289,75 @@ document.addEventListener('DOMContentLoaded', () => {
         renderMenu();
         if (currentCategory) scrollToCategory(currentCategory);
     });
+
+    // --- NEW: PWA Prompt Logic ---
+    const pwaPrompt = document.getElementById('pwa-prompt');
+    const pwaInstallBtn = document.getElementById('pwa-install-btn');
+    const pwaCloseBtn = document.getElementById('pwa-close-btn');
+    const pwaModal = document.getElementById('pwa-modal');
+    const pwaModalClose = document.getElementById('pwa-modal-close');
+
+    // Detect if device is mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    // Detect standalone mode (PWA installed)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+    // Show prompt if mobile and not installed
+    if (isMobile && !isStandalone) {
+        // Show after a short delay
+        setTimeout(() => {
+            if (pwaPrompt) pwaPrompt.setAttribute('aria-hidden', 'false');
+        }, 1500);
+    }
+
+    if (pwaCloseBtn) {
+        pwaCloseBtn.addEventListener('click', () => {
+            pwaPrompt.setAttribute('aria-hidden', 'true');
+        });
+    }
+
+    if (pwaInstallBtn) {
+        pwaInstallBtn.addEventListener('click', () => {
+            pwaPrompt.setAttribute('aria-hidden', 'true');
+            if (pwaModal) pwaModal.setAttribute('aria-hidden', 'false');
+        });
+    }
+
+    if (pwaModalClose) {
+        pwaModalClose.addEventListener('click', () => {
+            pwaModal.setAttribute('aria-hidden', 'true');
+        });
+    }
+
+    // --- NEW: Swipe Gestures ---
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+        const diff = touchEndX - touchStartX;
+        const swipeThreshold = 50;
+        
+        // Ensure we only swipe horizontally
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                // Swiped right -> go to previous day
+                prevBtn.click();
+            } else {
+                // Swiped left -> go to next day
+                nextBtn.click();
+            }
+        }
+    }
 
 });
 
