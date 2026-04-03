@@ -1,30 +1,31 @@
-Day,Mon,Tue,Wed,Thurs,Fri,Sat,Sun
-Breakfast,Veg Sandwich,Misal Pav,Onion Poha,Tadka Idli,Goan Bhaji,Veg Upma,Onion Poha
-Breakfast,Ketchup,Farsaan,Lemon+Sev+Curd,Chutney,Pav,Chutney,Lemon+Sev+Curd
-Breakfast,Boiled Egg,Boiled Egg,Boiled Egg,Boiled Egg,Boiled Egg,Boiled Egg,Boiled Egg
-Breakfast,Bread+Butter+Jam,Bread+Butter+Jam,Bread+Butter+Jam,Bread+Butter+Jam,Bread+Butter+Jam,Bread+Butter+Jam,Bread+Butter+Jam
-Breakfast,Bournvita,Bournvita,Bournvita,Bournvita,Bournvita,Bournvita,Bournvita
-Breakfast,Hot & Cold Milk,Hot & Cold Milk,Hot & Cold Milk,Hot & Cold Milk,Hot & Cold Milk,Hot & Cold Milk,Hot & Cold Milk
-Breakfast,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee
-Breakfast,Cornflakes,Cornflakes,Cornflakes,Cornflakes,Cornflakes,Cornflakes,Cornflakes
-Lunch,Dahi Kadi,Spicy Matar Masala,Moong Usal,Dum Aloo Gravy,Methi Matar Masala,Veg Makhanwala,Aloo Methi
-Lunch,Beans Dry,Soya Masala Dry,Dum Bhindi,Gobhi Dry,Aloo Chakli,Beans Dry,Soya Biryani
-Lunch,Dal Tadka,Dal Fry,Dal Kolhapuri,Dal Tadka,Masoor Dal,Dal Lasooni,Dal Fry
-Lunch,Plain Rice,Rice,Sweet Corn Pulao,Plain Rice,Jeera Rice,Rice,Plain Rice
-Lunch,Chapati,Chapati,Chapati,Puri + Chapati,Chapati,Chapati,Chapati
-Lunch,Roasted Papad,Roasted Papad,Roasted Papad,Fryums,Roasted Papad,Roasted Papad,Roasted Papad
-Lunch,Green Salad,Mix Salad,Sprout Moong Salad,Toss Salad,Toss Salad,Carrot- Beetroot Salad,*******
-Lunch,Plain Curd,*******,Plain Curd,*******,Plain Curd,*******,Plain Curd
-Lunch,*******,Punjabi Lassi,*******,Fresh Lime Water,*******,Buttermilk,*******
-Lunch,Sevai Kheer,Gulab Jamun,Mohantal,Shrikhand,Malai Sandwich,Boondi Laddoo,*******
-Snacks,Bhel,Masala Maggie,Sandwich,Dabeli,Bhel,Vada pav,Chowmein
-Snacks,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee
-Dinner,Mutter Paneer,Mixed Veg Dry,Paneer Biryani,Veg Kolhapuri,Paneer Lazeez,Green Peas Masala,Pindi Chhole
-Dinner,Jeera Rice,Biryani Rice,Aloo Capsicum,Dudhi Channa,Pumpkin Dry,Baingan Bharta,Kulche
-Dinner,Dal Fry,Dal Fry,Dal lasooni,Dal Fry,Dal Tadka,Dal Kolhapuri,Dahi Sev Puri
-Dinner,Plain Rice,Plain Rice,*******,Plain Rice,Rice,Plain Rice,Khichdi/Plain Rice
-Dinner,Chapati,Chapati,Chapati,Chapati,Chapati,Chapati,Chapati
-Dinner,Onion Salad,Onion + Lemon,Mix Salad,Green Salad,Sirka Onion,Mix Salad,Onion Salad
-Dinner,Veg Raita,*******,Plain Curd,*******,Plain Curd,*******,Choco Bite
-Dinner,Egg Kolhapuri,*******,Chicken Biryani,*******,Chicken Patiala/Egg Curry,*******,*******
-Dinner,Fruit,*******,Fruit,*******,Fruit,*******,*******
+Meal,Item,Mon,Tue,Wed,Thu,Fri,Sat,Sun
+Breakfast,Main,Aloo Pyaaz Paratha,Medu Vada,Onion Poha,Masala Sandwich,Idli,Misal Pav,Podi Masala Dosa
+Breakfast,Accompaniment,Curd + Pickle,Sambhar + Chutney,Lemon + Sev + Curd,Ketchup + Green Chutney,Sambhar + Chutney,Farsaan + Lemon + Onion,Sambhar + Chutney
+Breakfast,Egg,Omelette or Boiled Egg,Omelette or Boiled Egg,Omelette or Boiled Egg,Omelette or Boiled Egg,Omelette or Boiled Egg,Omelette or Boiled Egg,Omelette or Boiled Egg
+Breakfast,Bread,Bread+Butter+Jam,Bread+Butter+Jam,Bread+Butter+Jam,Bread+Butter+Jam,Bread+Butter+Jam,Bread+Butter+Jam,Bread+Butter+Jam
+Breakfast,Health Drink,Bournvita,Bournvita,Bournvita,Bournvita,Bournvita,Bournvita,Bournvita
+Breakfast,Milk,Hot & Cold Milk,Hot & Cold Milk,Hot & Cold Milk,Hot & Cold Milk,Hot & Cold Milk,Hot & Cold Milk,Hot & Cold Milk
+Breakfast,Beverage,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee
+Breakfast,Cereal,Cornflakes,Cornflakes,Cornflakes,Cornflakes,Cornflakes,Cornflakes,Cornflakes
+Lunch,Gravy 1,Malai Kofta Gravy,Punjabi Rajma,Soya Chilli,Chhole Amritsari,Methi Matar Masala,Dum Aloo Gravy,Pyaaz Paratha
+Lunch,Gravy 2,Black Chana Masala,Tawa Veg Dry,Beans Dry,Aloo Methi,Bhindi Do Pyaaza,Moong Dry,Thecha + Mirchi Pickle
+Lunch,Dal,Dal Kolhapuri,Dal Kolhapuri,Dal Makhni,Veg Dal,Masoor Dal,Dal Lasooni,Dal Fry
+Lunch,Rice,Plain Rice,Plain Rice,Jeera Rice,Plain Rice,Plain Rice,Plain Rice,Veg Biryani
+Lunch,Bread,Chapati,Chapati,Chapati,Puri + Chapati,Chapati,Chapati,Chapati
+Lunch,Soup,Rasam,Sambhar,Rasam,Sambhar,Rasam,Sambhar,Kokam Rasam
+Lunch,Papad,Fryums,Roasted Papad,Fryums,Fried Papad,Roasted Papad,Fried Papad,Roasted Papad
+Lunch,Salad,Green Salad,Masala Chopped Salad,Sprout Moong Salad,Toss Salad,Masala Chopped Salad,Carrot Beetroot Salad,Macaroni Salad
+Lunch,Curd,Plain Curd,,Plain Curd,,Plain Curd,,Plain Curd
+Lunch,Drink,,Buttermilk,,Fresh Lime Water,,Punjabi Lassi,
+Lunch,Dessert,Gulab Jamun,Shahi Tukda,Moong Dal Halwa,Sevai Kheer,Malai Sandwich,Pineapple Sheera,
+Snacks,Main,Bread Pakoda,Dahi Kachori,Bhel,Vada Pav,Dabeli,Papdi Chaat,French Fries
+Snacks,Beverage,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee,Tea & Coffee
+Dinner,Gravy 1,Paneer Tikka Masala,Pav Bhaji,Paneer Biryani,Veg Makhanwala,Paneer Lazeez / Bhurji,Rajma Masala,Punjabi Chhole
+Dinner,Gravy 2,Aloo Capsicum,Masala Bhindi,Pumpkin Dry,Gobhi Masala,Aloo Baingan,Soya Kheema,Kulche/Bhature
+Dinner,Dal,Dal Fry,Dal Tadka,Dal Lasooni,Dal Fry,Dal Tadka,Dal Kolhapuri,Dahi Sev Puri
+Dinner,Rice,Biryani Rice,Plain Rice,Plain Rice,Jeera Rice,Jeera Rice,Plain Rice,Masala Khichadi
+Dinner,Bread,Chapati,Chapati,Chapati,Chapati,Chapati + Paratha,Chapati,Chapati
+Dinner,Salad,Toss Salad,Onion + Lemon,Mix Salad,,Sirka Onion,,Onion Salad
+Dinner,Curd/Raita,Boondi Raita,Plain Curd,Veg Raita,Plain Curd,Boondi Raita,Plain Curd,Choco Bite
+Dinner,Non-Veg/Egg,Egg Kolhapuri,Tomato Soup + Croutons,Chicken Biryani,Hot n Sour Soup,Chicken Patiala / Egg Bhurji,Veg Soup,
+Dinner,Fruit,Fruit,,Fruit,,Fruit,,

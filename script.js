@@ -85,10 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
         menuContainer.innerHTML = '';
 
         // Group by Category (Breakfast, Lunch, etc.)
-        const categories = ['Breakfast', 'Lunch', 'Snacks', 'Dinner'];
 
+        const categories = ['Breakfast', 'Lunch', 'Snacks', 'Dinner'];
         categories.forEach(category => {
-            const items = menuData.filter(item => item['Day'] === category);
+            // Use 'Meal' for new CSV format
+            const items = menuData.filter(item => item['Meal'] === category);
             if (items.length === 0) return;
 
             const section = document.createElement('div');
@@ -260,6 +261,35 @@ document.addEventListener('DOMContentLoaded', () => {
         return visibleCategory;
     };
 
+
+    // --- Animated Day Slide Transition ---
+    const menuContainerParent = document.querySelector('.app-container');
+    let isSliding = false;
+    function animateDaySlide(direction, callback) {
+        if (isSliding) return;
+        isSliding = true;
+        const menu = document.getElementById('menu-container');
+        menu.style.transition = 'transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s cubic-bezier(0.4,0,0.2,1)';
+        menu.style.willChange = 'transform, opacity';
+        menu.style.transform = `translateX(${direction === 'left' ? '-100%' : '100%'})`;
+        menu.style.opacity = '0';
+        setTimeout(() => {
+            callback();
+            menu.style.transition = 'none';
+            menu.style.transform = `translateX(${direction === 'left' ? '100%' : '-100%'})`;
+            setTimeout(() => {
+                menu.style.transition = 'transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s cubic-bezier(0.4,0,0.2,1)';
+                menu.style.transform = 'translateX(0)';
+                menu.style.opacity = '1';
+                setTimeout(() => {
+                    menu.style.transition = '';
+                    menu.style.willChange = '';
+                    isSliding = false;
+                }, 400);
+            }, 30);
+        }, 350);
+    }
+
     const scrollToCategory = (category) => {
         if (!category) return;
         const section = document.getElementById(`meal-${category.toLowerCase()}`);
@@ -276,18 +306,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Event Listeners
+
     prevBtn.addEventListener('click', () => {
+        if (isSliding) return;
         const currentCategory = getVisibleMealCategory();
-        viewDate.setDate(viewDate.getDate() - 1);
-        renderMenu();
-        if (currentCategory) scrollToCategory(currentCategory);
+        animateDaySlide('right', () => {
+            viewDate.setDate(viewDate.getDate() - 1);
+            renderMenu();
+            if (currentCategory) scrollToCategory(currentCategory);
+        });
     });
 
     nextBtn.addEventListener('click', () => {
+        if (isSliding) return;
         const currentCategory = getVisibleMealCategory();
-        viewDate.setDate(viewDate.getDate() + 1);
-        renderMenu();
-        if (currentCategory) scrollToCategory(currentCategory);
+        animateDaySlide('left', () => {
+            viewDate.setDate(viewDate.getDate() + 1);
+            renderMenu();
+            if (currentCategory) scrollToCategory(currentCategory);
+        });
     });
 
     // --- NEW: PWA Prompt Logic ---
@@ -350,16 +387,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleSwipe() {
         const diffX = touchEndX - touchStartX;
         const diffY = touchEndY - touchStartY;
-        const swipeThreshold = 120; // Increased threshold
-        
+        const swipeThreshold = 80; // Lowered for more responsive
         // Ensure horizontal swipe is significant and much larger than vertical movement
         if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > Math.abs(diffY) * 2) {
             if (diffX > 0) {
-                // Swiped right -> go to previous day
-                prevBtn.click();
+                // Swiped right -> go to previous day with animation
+                if (!isSliding) prevBtn.click();
             } else {
-                // Swiped left -> go to next day
-                nextBtn.click();
+                // Swiped left -> go to next day with animation
+                if (!isSliding) nextBtn.click();
             }
         }
     }
