@@ -66,10 +66,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render Menu
     const renderMenu = () => {
         const dayName = getDayName(viewDate); // Mon, Tue...
-        // Map short day name to CSV header if needed. CSV headers are Mon, Tue, Wed, Thurs, Fri, Sat, Sun
-        // "Thu" needs to be "Thurs"
+        // Determine which CSV header to use for the day. Different CSVs may use 'Thu' or 'Thurs'.
         let csvDay = dayName;
-        if (dayName === 'Thu') csvDay = 'Thurs';
+        if (menuData && menuData.length) {
+            const headers = Object.keys(menuData[0]);
+            if (!headers.includes(csvDay)) {
+                if (dayName === 'Thu') {
+                    // Prefer the header that actually exists in the CSV
+                    if (headers.includes('Thu')) csvDay = 'Thu';
+                    else if (headers.includes('Thurs')) csvDay = 'Thurs';
+                } else {
+                    // Fallback: try the long weekday name (e.g., 'Thursday')
+                    const longDay = viewDate.toLocaleDateString('en-US', { weekday: 'long' });
+                    if (headers.includes(longDay)) csvDay = longDay;
+                }
+            }
+        }
 
         dayDisplay.textContent = viewDate.toLocaleDateString('en-US', { weekday: 'long' });
         dateDisplay.textContent = viewDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
@@ -131,7 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 name.className = 'item-name';
                 // Get the value for the specific day
                 let foodItem = item[csvDay];
-                if (!foodItem || foodItem === '-') foodItem = 'Not Available';
+                // Show a single dash when no item is provided; preserve '-' if present in CSV
+                if (!foodItem) foodItem = '-';
                 name.textContent = foodItem;
 
                 row.appendChild(name);
