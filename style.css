@@ -1,9 +1,9 @@
 :root {
     /* Custom Palette */
-    --color-1: #5CCAE8; /* Sky Blue */
-    --color-2: #CF2027; /* Red */
-    --color-3: #f5bf42; /* Gold */
-    --color-4: #0F2A5A; /* Dark Blue for Dinner */
+    --color-1: #5CCAE8; /* Sky Blue — now used for Snacks */
+    --color-2: #E53935; /* Red — now used for Lunch */
+    --color-3: #F5BF42; /* Gold — Breakfast */
+    --color-4: #5C7AEA; /* Vivid Blue — Dinner (lightened for visibility) */
 
     /* Minimalist Dark Theme with Transparent Base */
     --bg-color: #050505;
@@ -15,8 +15,8 @@
 
     /* Accents for Meals */
     --accent-breakfast: var(--color-3);
-    --accent-lunch: var(--color-1);
-    --accent-snacks: var(--color-2);
+    --accent-lunch: var(--color-2);
+    --accent-snacks: var(--color-1);
     --accent-dinner: var(--color-4);
 
     --glass-blur: blur(16px);
@@ -179,6 +179,12 @@ h1 {
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
+/* Menu Container — supports interactive drag */
+#menu-container {
+    touch-action: pan-y;
+    will-change: transform, opacity;
+}
+
 /* Menu Sections */
 .meal-section {
     margin-bottom: var(--spacing-lg);
@@ -246,9 +252,7 @@ h1 {
 }
 
 .meal-card:hover {
-    transform: translateY(-2px);
     background-color: var(--card-bg-hover);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .menu-item {
@@ -256,6 +260,33 @@ h1 {
     justify-content: flex-start;
     padding: 12px 0;
     border-bottom: 1px solid var(--border-color);
+    opacity: 0;
+    animation: itemFadeIn 0.35s ease forwards;
+}
+
+/* Staggered item entrance */
+.menu-item:nth-child(1) { animation-delay: 0.04s; }
+.menu-item:nth-child(2) { animation-delay: 0.08s; }
+.menu-item:nth-child(3) { animation-delay: 0.12s; }
+.menu-item:nth-child(4) { animation-delay: 0.16s; }
+.menu-item:nth-child(5) { animation-delay: 0.20s; }
+.menu-item:nth-child(6) { animation-delay: 0.24s; }
+.menu-item:nth-child(7) { animation-delay: 0.28s; }
+.menu-item:nth-child(8) { animation-delay: 0.32s; }
+.menu-item:nth-child(9) { animation-delay: 0.36s; }
+.menu-item:nth-child(10) { animation-delay: 0.40s; }
+.menu-item:nth-child(11) { animation-delay: 0.44s; }
+.menu-item:nth-child(12) { animation-delay: 0.48s; }
+
+@keyframes itemFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .menu-item:last-child {
@@ -263,12 +294,14 @@ h1 {
 }
 
 .item-type {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     flex: 0 0 auto;
+    min-width: 90px;
     margin-right: 12px;
+    opacity: 0.85;
 }
 
 .item-name {
@@ -277,6 +310,11 @@ h1 {
     text-align: left;
     flex: 1;
     padding-left: 0;
+}
+
+/* Empty item (dash) dimming */
+.item-name.empty-item {
+    opacity: 0.3;
 }
 
 /* Loading */
@@ -303,6 +341,12 @@ h1 {
     margin-right: 10px;
     border-radius: 50%;
     box-shadow: 0 0 10px currentColor;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 10px currentColor; }
+    50% { opacity: 0.6; box-shadow: 0 0 20px currentColor; }
 }
 
 /* Footer */
@@ -315,7 +359,11 @@ h1 {
     opacity: 0.7;
 }
 
-/* Breakfast */
+/* ==========================================
+   MEAL-SPECIFIC COLORS
+   ========================================== */
+
+/* Breakfast — Gold/Yellow */
 #meal-breakfast .meal-title {
     color: var(--accent-breakfast);
     text-shadow: 0 0 12px rgba(245, 191, 66, 0.4);
@@ -336,10 +384,10 @@ h1 {
     background-color: rgba(245, 191, 66, 0.05);
 }
 
-/* Lunch */
+/* Lunch — Red */
 #meal-lunch .meal-title {
     color: var(--accent-lunch);
-    text-shadow: 0 0 12px rgba(92, 202, 232, 0.4);
+    text-shadow: 0 0 12px rgba(229, 57, 53, 0.4);
 }
 
 #meal-lunch .item-type {
@@ -353,14 +401,14 @@ h1 {
 
 #meal-lunch.active-meal .meal-card {
     border-color: var(--accent-lunch);
-    box-shadow: 0 0 20px rgba(92, 202, 232, 0.2);
-    background-color: rgba(92, 202, 232, 0.05);
+    box-shadow: 0 0 20px rgba(229, 57, 53, 0.2);
+    background-color: rgba(229, 57, 53, 0.05);
 }
 
-/* Snacks */
+/* Snacks — Sky Blue */
 #meal-snacks .meal-title {
     color: var(--accent-snacks);
-    text-shadow: 0 0 12px rgba(207, 32, 39, 0.4);
+    text-shadow: 0 0 12px rgba(92, 202, 232, 0.5);
 }
 
 #meal-snacks .item-type {
@@ -374,14 +422,14 @@ h1 {
 
 #meal-snacks.active-meal .meal-card {
     border-color: var(--accent-snacks);
-    box-shadow: 0 0 20px rgba(207, 32, 39, 0.2);
-    background-color: rgba(207, 32, 39, 0.05);
+    box-shadow: 0 0 20px rgba(92, 202, 232, 0.25);
+    background-color: rgba(92, 202, 232, 0.06);
 }
 
-/* Dinner */
+/* Dinner — Vivid Blue */
 #meal-dinner .meal-title {
     color: var(--accent-dinner);
-    text-shadow: 0 0 12px rgba(15, 42, 90, 0.6);
+    text-shadow: 0 0 12px rgba(92, 122, 234, 0.5);
 }
 
 #meal-dinner .item-type {
@@ -394,12 +442,48 @@ h1 {
 }
 
 #meal-dinner.active-meal .meal-card {
-    border-color: var(--border-color); /* Kept subtle */
-    box-shadow: 0 0 20px rgba(15, 42, 90, 0.4);
-    background-color: rgba(15, 42, 90, 0.15); /* Slightly darker */
+    border-color: var(--accent-dinner);
+    box-shadow: 0 0 20px rgba(92, 122, 234, 0.3);
+    background-color: rgba(92, 122, 234, 0.08);
 }
 
-/* Update Notification */
+/* ==========================================
+   SWIPE INDICATOR
+   ========================================== */
+.swipe-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    opacity: 0;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    margin-top: var(--spacing-sm);
+    animation: swipeHintFade 4s ease 2s forwards;
+}
+
+.swipe-hint svg {
+    width: 16px;
+    height: 16px;
+    animation: swipeHintBounce 1.5s ease-in-out infinite;
+}
+
+@keyframes swipeHintFade {
+    0% { opacity: 0; }
+    20% { opacity: 0.5; }
+    80% { opacity: 0.5; }
+    100% { opacity: 0; display: none; }
+}
+
+@keyframes swipeHintBounce {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(4px); }
+}
+
+/* ==========================================
+   UPDATE NOTIFICATION
+   ========================================== */
 .update-notification {
     position: fixed;
     bottom: 20px;
@@ -458,7 +542,9 @@ h1 {
     }
 }
 
-/* PWA App Banner and Modal Classes */
+/* ==========================================
+   PWA PROMPT & MODAL
+   ========================================== */
 .pwa-prompt {
     position: fixed;
     bottom: 20px;

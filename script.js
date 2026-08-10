@@ -91,7 +91,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (viewDate.toDateString() === today.toDateString()) {
             viewLabel.textContent = "Today";
         } else {
-            viewLabel.textContent = viewDate.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' });
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            if (viewDate.toDateString() === tomorrow.toDateString()) {
+                viewLabel.textContent = "Tomorrow";
+            } else if (viewDate.toDateString() === yesterday.toDateString()) {
+                viewLabel.textContent = "Yesterday";
+            } else {
+                viewLabel.textContent = viewDate.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' });
+            }
         }
 
         menuContainer.innerHTML = '';
@@ -136,15 +146,23 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'meal-card';
 
             items.forEach(item => {
+                const itemType = item['Item'] || '';
+                // Get the value for the specific day
+                let foodItem = item[csvDay];
+
+                // Treat asterisk-only entries (e.g. "******") as empty
+                if (foodItem && /^\*+$/.test(foodItem)) foodItem = '';
+
+                // Show a single dash when no item is provided; preserve '-' if present in CSV
+                const isEmpty = !foodItem;
+                if (isEmpty) foodItem = '-';
+
                 const row = document.createElement('div');
                 row.className = 'menu-item';
 
                 const name = document.createElement('span');
                 name.className = 'item-name';
-                // Get the value for the specific day
-                let foodItem = item[csvDay];
-                // Show a single dash when no item is provided; preserve '-' if present in CSV
-                if (!foodItem) foodItem = '-';
+                if (isEmpty) name.classList.add('empty-item');
                 name.textContent = foodItem;
 
                 row.appendChild(name);
@@ -275,32 +293,46 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    // --- Animated Day Slide Transition ---
+    // --- Improved Interactive Day Slide Transition ---
     const menuContainerParent = document.querySelector('.app-container');
     let isSliding = false;
+
     function animateDaySlide(direction, callback) {
         if (isSliding) return;
         isSliding = true;
         const menu = document.getElementById('menu-container');
-        menu.style.transition = 'transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s cubic-bezier(0.4,0,0.2,1)';
+
+        // Phase 1: Slide out
+        menu.style.transition = 'transform 0.28s cubic-bezier(0.4,0,0.6,1), opacity 0.2s ease';
         menu.style.willChange = 'transform, opacity';
-        menu.style.transform = `translateX(${direction === 'left' ? '-100%' : '100%'})`;
+        menu.style.transform = `translateX(${direction === 'left' ? '-40%' : '40%'})`;
         menu.style.opacity = '0';
+
         setTimeout(() => {
+            // Execute the day change
             callback();
+
+            // Phase 2: Instant reposition on opposite side
             menu.style.transition = 'none';
-            menu.style.transform = `translateX(${direction === 'left' ? '100%' : '-100%'})`;
-            setTimeout(() => {
-                menu.style.transition = 'transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s cubic-bezier(0.4,0,0.2,1)';
+            menu.style.transform = `translateX(${direction === 'left' ? '30%' : '-30%'})`;
+            menu.style.opacity = '0';
+
+            // Force reflow
+            menu.offsetHeight;
+
+            // Phase 3: Spring in from opposite side
+            requestAnimationFrame(() => {
+                menu.style.transition = 'transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease-out';
                 menu.style.transform = 'translateX(0)';
                 menu.style.opacity = '1';
+
                 setTimeout(() => {
                     menu.style.transition = '';
                     menu.style.willChange = '';
                     isSliding = false;
-                }, 400);
-            }, 30);
-        }, 350);
+                }, 380);
+            });
+        }, 280);
     }
 
     const scrollToCategory = (category) => {
@@ -380,38 +412,92 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- NEW: Swipe Gestures ---
+    // --- Interactive Swipe Gestures with Visual Drag Feedback ---
     let touchStartX = 0;
     let touchStartY = 0;
-    let touchEndX = 0;
-    let touchEndY = 0;
+    let touchCurrentX = 0;
+    let isDragging = false;
+    let dragLocked = false; // true = horizontal swipe, false = not yet decided
+
+    const menu = document.getElementById('menu-container');
 
     document.addEventListener('touchstart', e => {
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
+        if (isSliding) return;
+        touchStartX = e.changedTouches[0].clientX;
+        touchStartY = e.changedTouches[0].clientY;
+        touchCurrentX = touchStartX;
+        isDragging = false;
+        dragLocked = false;
+    }, { passive: true });
+
+    document.addEventListener('touchmove', e => {
+        if (isSliding) return;
+        const currentX = e.changedTouches[0].clientX;
+        const currentY = e.changedTouches[0].clientY;
+        const diffX = currentX - touchStartX;
+        const diffY = currentY - touchStartY;
+
+        // Decide drag direction after 10px of movement
+        if (!dragLocked && (Math.abs(diffX) > 10 || Math.abs(diffY) > 10)) {
+            if (Math.abs(diffX) > Math.abs(diffY) * 1.2) {
+                dragLocked = true;
+                isDragging = true;
+            } else {
+                // Vertical scroll — bail out
+                isDragging = false;
+                return;
+            }
+        }
+
+        if (isDragging) {
+            touchCurrentX = currentX;
+            // Apply drag transform with rubber-band effect
+            const drag = diffX * 0.35; // Dampen the drag
+            const opacity = Math.max(0.4, 1 - Math.abs(diffX) / 600);
+            menu.style.transition = 'none';
+            menu.style.transform = `translateX(${drag}px)`;
+            menu.style.opacity = opacity;
+        }
     }, { passive: true });
 
     document.addEventListener('touchend', e => {
-        touchEndX = e.changedTouches[0].screenX;
-        touchEndY = e.changedTouches[0].screenY;
-        handleSwipe();
-    }, { passive: true });
+        if (isSliding) return;
+        
+        const diffX = e.changedTouches[0].clientX - touchStartX;
+        const diffY = e.changedTouches[0].clientY - touchStartY;
+        const swipeThreshold = 60;
 
-    function handleSwipe() {
-        const diffX = touchEndX - touchStartX;
-        const diffY = touchEndY - touchStartY;
-        const swipeThreshold = 80; // Lowered for more responsive
-        // Ensure horizontal swipe is significant and much larger than vertical movement
-        if (Math.abs(diffX) > swipeThreshold && Math.abs(diffX) > Math.abs(diffY) * 2) {
+        if (isDragging && Math.abs(diffX) > swipeThreshold) {
+            // Commit the swipe
+            const currentCategory = getVisibleMealCategory();
             if (diffX > 0) {
-                // Swiped right -> go to previous day with animation
-                if (!isSliding) prevBtn.click();
+                // Swiped right -> previous day
+                animateDaySlide('right', () => {
+                    viewDate.setDate(viewDate.getDate() - 1);
+                    renderMenu();
+                    if (currentCategory) scrollToCategory(currentCategory);
+                });
             } else {
-                // Swiped left -> go to next day with animation
-                if (!isSliding) nextBtn.click();
+                // Swiped left -> next day
+                animateDaySlide('left', () => {
+                    viewDate.setDate(viewDate.getDate() + 1);
+                    renderMenu();
+                    if (currentCategory) scrollToCategory(currentCategory);
+                });
             }
+        } else if (isDragging) {
+            // Snap back — swipe not strong enough
+            menu.style.transition = 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease';
+            menu.style.transform = 'translateX(0)';
+            menu.style.opacity = '1';
+            setTimeout(() => {
+                menu.style.transition = '';
+            }, 320);
         }
-    }
+
+        isDragging = false;
+        dragLocked = false;
+    }, { passive: true });
 
 });
 
