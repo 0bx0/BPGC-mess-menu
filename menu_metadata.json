@@ -1,0 +1,9 @@
+{
+    "start": "2026-10-03",
+    "_comment": "parity contains the index (0/1) of the item which was served _first_ under the new menu. List all pairs when updating the menu; set to null if no data available for a pair at the moment.",
+    "parity": {
+        "Bhature / Stuffed Kulche": 0,
+        "Dahi Sev Puri / Pani Puri": 0,
+        "Chicken Patiala / Egg Kolhapuri": null
+    }
+}

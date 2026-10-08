@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const csvUrl = 'mess.csv';
+    const metadataUrl = 'menu_metadata.json';
     let menuData = [];
+    let startDate = new Date();
+    let parityData = {};
     let currentDate = new Date();
     let viewDate = new Date();
 
@@ -51,10 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Fetch Data
-    fetch(csvUrl)
-        .then(response => response.text())
-        .then(text => {
-            menuData = parseCSV(text);
+    Promise.all([
+        fetch(csvUrl).then(response => response.text()),
+        fetch(metadataUrl).then(response => response.json())
+    ])
+        .then(([menuText, metadataJson]) => {
+            menuData = parseCSV(menuText);
+            startDate = new Date(metadataJson.start);
+            parityData = metadataJson.parity;
             renderMenu();
             scrollToActiveMeal();
         })
@@ -145,27 +152,43 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('div');
             card.className = 'meal-card';
 
-            items.forEach(item => {
+            items.forEach(item => {   
+                const row = document.createElement('div');
+                row.className = 'menu-item';
+                
                 const itemType = item['Item'] || '';
                 // Get the value for the specific day
                 let foodItem = item[csvDay];
-
+                
                 // Treat asterisk-only entries (e.g. "******") as empty
                 if (foodItem && /^\*+$/.test(foodItem)) foodItem = '';
 
-                // Show a single dash when no item is provided; preserve '-' if present in CSV
-                const isEmpty = !foodItem;
-                if (isEmpty) foodItem = '-';
+                if (parityData[foodItem] != null) {
+                    const activeItem = document.createElement('span');
+                    activeItem.classList.add('item-name');
 
-                const row = document.createElement('div');
-                row.className = 'menu-item';
+                    const inactiveItem = document.createElement('span');
+                    inactiveItem.classList.add('inactive-item');
 
-                const name = document.createElement('span');
-                name.className = 'item-name';
-                if (isEmpty) name.classList.add('empty-item');
-                name.textContent = foodItem;
+                    const [activeItemText, inactiveItemText] = getActiveInactiveItems(foodItem);
+                    activeItem.textContent = activeItemText + ' ';
+                    inactiveItem.textContent = '(' + inactiveItemText + ')';
 
-                row.appendChild(name);
+                    activeItem.appendChild(inactiveItem);
+                    row.appendChild(activeItem);
+                } else {
+                    const name = document.createElement('span');
+                    name.className = 'item-name';
+    
+                    // Show a single dash when no item is provided; preserve '-' if present in CSV
+                    if (!foodItem) {
+                        foodItem = '-';
+                        name.classList.add('empty-item');
+                    }
+
+                    name.textContent = foodItem;
+                    row.appendChild(name);
+                }
                 card.appendChild(row);
             });
 
@@ -177,6 +200,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Setup Intersection Observer for Dynamic Background Glow
         setupBackgroundObserver();
     };
+
+    //  Given a string with two items separated by a slash, calculates and
+    // returns which one is the active and which one is the inactive item
+    // for the set viewDate
+    const getActiveInactiveItems = (itemText) => {
+        const items = itemText.split('/').map(item => item.trim());
+        const occurrences = Math.floor((viewDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+        const activeIndex = (occurrences + parityData[itemText]) % 2;
+        return [ items[activeIndex], items[1-activeIndex] ];
+    }
 
     // Observer to track which meal section is currently visible to change the BG blur
     const setupBackgroundObserver = () => {
