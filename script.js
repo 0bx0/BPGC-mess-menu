@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Meal Timings (24h format)
     const timings = {
         'Breakfast': { start: '07:30', end: '09:30' },
-        'Lunch': { start: '12:00', end: '14:15' },
+        'Lunch': { start: '12:00', end: '14:30' },
         'Snacks': { start: '17:00', end: '18:00' },
         'Dinner': { start: '19:30', end: '21:30' }
     };
