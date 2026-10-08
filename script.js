@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const getActiveInactiveItems = (itemText) => {
         const items = itemText.split('/').map(item => item.trim());
         const occurrences = Math.floor((viewDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-        const activeIndex = (occurrences + parityData[itemText]) % 2;
+        const activeIndex = (occurrences + parityData[itemText]) & 1;
         return [ items[activeIndex], items[1-activeIndex] ];
     }
 
