@@ -317,6 +317,12 @@ h1 {
     opacity: 0.3;
 }
 
+/* Inactive item - dim + small. */
+.inactive-item {
+    opacity: 0.3;
+    font-size: 0.85em;
+}
+
 /* Loading */
 .loading-spinner {
     border: 2px solid var(--border-color);

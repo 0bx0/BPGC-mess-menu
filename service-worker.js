@@ -1,11 +1,12 @@
-const CACHE_NAME = 'mess-menu-v27';
+const CACHE_NAME = 'mess-menu-v28';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
     './style.css',
     './script.js',
     './mess.csv',
-    './icon.png'
+    './icon.png',
+    './menu_metadata.json'
 ];
 
 self.addEventListener('install', (event) => {
