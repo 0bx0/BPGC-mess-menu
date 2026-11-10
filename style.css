@@ -1,28 +1,58 @@
+/* ==========================================
+   MATERIAL 3 (DARK) THEME
+   Tonal surfaces + the app's original palette
+   ========================================== */
 :root {
-    /* Custom Palette */
-    --color-1: #5CCAE8; /* Sky Blue — now used for Snacks */
-    --color-2: #E53935; /* Red — now used for Lunch */
-    --color-3: #F5BF42; /* Gold — Breakfast */
-    --color-4: #5C7AEA; /* Vivid Blue — Dinner (lightened for visibility) */
+    /* Original palette */
+    --color-1: #5CCAE8; /* Sky Blue — Snacks */
+    --color-2: #E53935; /* Red — Lunch */
+    --color-3: #F5BF42; /* Gold — Breakfast, primary */
+    --color-4: #5C7AEA; /* Vivid Blue — Dinner */
 
-    /* Minimalist Dark Theme with Transparent Base */
-    --bg-color: #050505;
-    --card-bg: rgba(255, 255, 255, 0.05);
-    --card-bg-hover: rgba(255, 255, 255, 0.08);
-    --text-primary: #FFFFFF;
-    --text-secondary: #CCCCCC;
-    --border-color: rgba(255, 255, 255, 0.1);
-
-    /* Accents for Meals */
+    /* Meal accents */
     --accent-breakfast: var(--color-3);
     --accent-lunch: var(--color-2);
     --accent-snacks: var(--color-1);
     --accent-dinner: var(--color-4);
 
-    --glass-blur: blur(16px);
+    /* M3 roles */
+    --md-primary: var(--color-3);
+    --md-on-primary: #3F2E00;
+    --md-surface: #121212;
+    --md-surface-container-low: #1B1B1D;
+    --md-surface-container: #1F1F22;
+    --md-surface-container-high: #2A2A2D;
+    --md-surface-container-highest: #353538;
+    --md-on-surface: #E6E1E5;
+    --md-on-surface-variant: #C9C5CA;
+    --md-outline: #8E8B91;
+    --md-outline-variant: #3A393D;
+    --md-inverse-surface: #E6E1E5;
+    --md-inverse-on-surface: #313033;
+    --md-scrim: rgba(0, 0, 0, 0.6);
 
-    --font-heading: 'Poppins', sans-serif;
-    --font-body: 'Roboto', sans-serif;
+    /* Elevation (used sparingly, M3 prefers tonal elevation) */
+    --md-elevation-2: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+    --md-elevation-3: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
+
+    /* Shape */
+    --md-shape-sm: 8px;
+    --md-shape-md: 12px;
+    --md-shape-lg: 16px;
+    --md-shape-xl: 28px;
+    --md-shape-full: 999px;
+
+    /* Motion */
+    --md-ease: cubic-bezier(0.2, 0, 0, 1);
+
+    --font-heading: 'Roboto', system-ui, sans-serif;
+    --font-body: 'Roboto', system-ui, sans-serif;
+
+    /* Legacy aliases */
+    --text-primary: var(--md-on-surface);
+    --text-secondary: var(--md-on-surface-variant);
+    --border-color: var(--md-outline-variant);
+    --danger: var(--color-2);
 
     --spacing-sm: 8px;
     --spacing-md: 16px;
@@ -37,67 +67,26 @@
 
 body {
     font-family: var(--font-body);
-    background-color: var(--bg-color);
-    color: var(--text-primary);
+    background-color: var(--md-surface);
+    color: var(--md-on-surface);
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
 }
 
-/* Custom Webkit Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--bg-color);
+    background: var(--md-surface);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
-}
-
-/* Dynamic Glowing Background Blob */
-.bg-glow {
-    position: fixed;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 70vw;
-    height: 70vh;
-    border-radius: 50%;
-    background-color: var(--glow-color, rgba(92, 202, 232, 0.1));
-    top: var(--glow-top, 50%);
-    filter: blur(100px);
-    opacity: 0.2;
-    z-index: -1;
-    pointer-events: none;
-    transition: background-color 1s ease, top 1s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-body[data-scroll-meal="Breakfast"] {
-    --glow-color: var(--accent-breakfast);
-    --glow-top: 20%;
-}
-
-body[data-scroll-meal="Lunch"] {
-    --glow-color: var(--accent-lunch);
-    --glow-top: 40%;
-}
-
-body[data-scroll-meal="Snacks"] {
-    --glow-color: var(--accent-snacks);
-    --glow-top: 60%;
-}
-
-body[data-scroll-meal="Dinner"] {
-    --glow-color: var(--accent-dinner);
-    --glow-top: 80%;
+    background: var(--md-surface-container-highest);
+    border-radius: var(--md-shape-full);
 }
 
 .app-container {
@@ -109,100 +98,131 @@ body[data-scroll-meal="Dinner"] {
     flex-direction: column;
 }
 
+/* ==========================================
+   STATE LAYERS (hover / press feedback)
+   ========================================== */
+.nav-btn,
+.pwa-btn,
+.update-btn,
+.pwa-close-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-btn::after,
+.pwa-btn::after,
+.update-btn::after,
+.pwa-close-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: currentColor;
+    opacity: 0;
+    transition: opacity 0.15s linear;
+    pointer-events: none;
+}
+
+.nav-btn:hover::after,
+.pwa-btn:hover::after,
+.update-btn:hover::after,
+.pwa-close-btn:hover::after {
+    opacity: 0.08;
+}
+
+.nav-btn:active::after,
+.pwa-btn:active::after,
+.update-btn:active::after,
+.pwa-close-btn:active::after {
+    opacity: 0.12;
+}
+
+:focus-visible {
+    outline: 2px solid var(--md-primary);
+    outline-offset: 2px;
+}
+
+/* ==========================================
+   HEADER & TOP BAR
+   ========================================== */
 .app-header {
-    margin-bottom: var(--spacing-lg);
-    text-align: left;
+    margin: var(--spacing-sm) 0 var(--spacing-lg);
     padding-left: var(--spacing-sm);
 }
 
 h1 {
     font-family: var(--font-heading);
-    font-weight: 600;
-    font-size: 2rem;
-    color: var(--text-primary);
+    font-weight: 400;
+    font-size: 2.25rem; /* M3 headline-large */
+    line-height: 1.2;
+    color: var(--md-on-surface);
     margin-bottom: 4px;
-    letter-spacing: -0.5px;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 .subtitle {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    font-weight: 400;
+    color: var(--md-on-surface-variant);
+    font-size: 1rem;
+    letter-spacing: 0.15px;
 }
 
 .controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba(10, 10, 10, 0.6);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    padding: var(--spacing-sm);
+    background-color: var(--md-surface-container-high);
+    padding: 4px;
     margin-bottom: var(--spacing-lg);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border-radius: var(--md-shape-xl);
     position: sticky;
-    top: 10px;
+    top: 12px;
     z-index: 100;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--md-elevation-2);
 }
 
 .nav-btn {
+    width: 48px;
+    height: 48px;
     background: transparent;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    color: var(--text-primary);
+    border: none;
+    border-radius: var(--md-shape-full);
+    color: var(--md-on-surface-variant);
     cursor: pointer;
-    padding: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
-}
-
-.nav-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: var(--border-color);
-    transform: scale(1.05);
-}
-
-.nav-btn:active {
-    transform: scale(0.95);
 }
 
 .current-view-label {
     font-family: var(--font-heading);
+    font-size: 1rem;
     font-weight: 500;
-    color: var(--text-primary);
-    letter-spacing: 0.5px;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+    letter-spacing: 0.15px;
+    color: var(--md-on-surface);
 }
 
-/* Menu Container — supports interactive drag */
+/* ==========================================
+   MENU
+   ========================================== */
 #menu-container {
     touch-action: pan-y;
     will-change: transform, opacity;
 }
 
-/* Menu Sections */
 .meal-section {
     margin-bottom: var(--spacing-lg);
     opacity: 0;
-    transform: translateY(20px);
-    animation: fadeSlideUp 0.5s ease forwards;
+    transform: translateY(16px);
+    animation: fadeSlideUp 0.4s var(--md-ease) forwards;
 }
 
 @keyframes fadeSlideUp {
     to {
-        opacity: 0.8;
+        opacity: 0.85;
         transform: translateY(0);
     }
 }
 
 .meal-section.active-meal {
-    opacity: 1;
-    animation: fadeSlideUpActive 0.5s ease forwards;
+    animation-name: fadeSlideUpActive;
 }
 
 @keyframes fadeSlideUpActive {
@@ -222,66 +242,60 @@ h1 {
 
 .meal-title {
     font-family: var(--font-heading);
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-primary);
+    font-size: 1.375rem; /* M3 title-large */
+    font-weight: 500;
+    color: var(--meal-accent, var(--md-on-surface));
     display: flex;
     align-items: center;
-    transition: all 0.3s ease;
 }
 
+/* Assist-chip style timing */
 .meal-time {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    background-color: var(--card-bg);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    padding: 4px 8px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    color: var(--md-on-surface-variant);
+    height: 32px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--md-outline-variant);
+    border-radius: var(--md-shape-sm);
 }
 
 .meal-card {
-    background-color: var(--card-bg);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    padding: var(--spacing-md);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.meal-card:hover {
-    background-color: var(--card-bg-hover);
+    background-color: var(--md-surface-container);
+    padding: 4px var(--spacing-md);
+    border-radius: var(--md-shape-lg);
+    transition: background-color 0.3s var(--md-ease);
 }
 
 .menu-item {
     display: flex;
-    justify-content: flex-start;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border-color);
+    align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--md-outline-variant);
     opacity: 0;
-    animation: itemFadeIn 0.35s ease forwards;
+    animation: itemFadeIn 0.3s var(--md-ease) forwards;
 }
 
-/* Staggered item entrance */
-.menu-item:nth-child(1) { animation-delay: 0.04s; }
-.menu-item:nth-child(2) { animation-delay: 0.08s; }
-.menu-item:nth-child(3) { animation-delay: 0.12s; }
-.menu-item:nth-child(4) { animation-delay: 0.16s; }
-.menu-item:nth-child(5) { animation-delay: 0.20s; }
-.menu-item:nth-child(6) { animation-delay: 0.24s; }
-.menu-item:nth-child(7) { animation-delay: 0.28s; }
-.menu-item:nth-child(8) { animation-delay: 0.32s; }
-.menu-item:nth-child(9) { animation-delay: 0.36s; }
-.menu-item:nth-child(10) { animation-delay: 0.40s; }
-.menu-item:nth-child(11) { animation-delay: 0.44s; }
-.menu-item:nth-child(12) { animation-delay: 0.48s; }
+.menu-item:nth-child(1) { animation-delay: 0.03s; }
+.menu-item:nth-child(2) { animation-delay: 0.06s; }
+.menu-item:nth-child(3) { animation-delay: 0.09s; }
+.menu-item:nth-child(4) { animation-delay: 0.12s; }
+.menu-item:nth-child(5) { animation-delay: 0.15s; }
+.menu-item:nth-child(6) { animation-delay: 0.18s; }
+.menu-item:nth-child(7) { animation-delay: 0.21s; }
+.menu-item:nth-child(8) { animation-delay: 0.24s; }
+.menu-item:nth-child(9) { animation-delay: 0.27s; }
+.menu-item:nth-child(10) { animation-delay: 0.30s; }
+.menu-item:nth-child(11) { animation-delay: 0.33s; }
+.menu-item:nth-child(12) { animation-delay: 0.36s; }
 
 @keyframes itemFadeIn {
     from {
         opacity: 0;
-        transform: translateY(6px);
+        transform: translateY(4px);
     }
     to {
         opacity: 1;
@@ -294,163 +308,85 @@ h1 {
 }
 
 .item-type {
-    font-size: 0.8rem;
+    font-size: 0.75rem; /* M3 label-medium */
     font-weight: 500;
-    text-transform: uppercase;
     letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--meal-accent, var(--md-on-surface-variant));
     flex: 0 0 auto;
-    min-width: 90px;
+    min-width: 96px;
     margin-right: 12px;
-    opacity: 0.85;
 }
 
 .item-name {
-    color: var(--text-primary);
-    font-weight: 400;
-    text-align: left;
+    color: var(--md-on-surface);
+    font-size: 1rem; /* M3 body-large */
+    letter-spacing: 0.25px;
     flex: 1;
-    padding-left: 0;
 }
 
-/* Empty item (dash) dimming */
 .item-name.empty-item {
-    opacity: 0.3;
+    color: var(--md-outline);
 }
 
-/* Inactive item - dim + small. */
 .inactive-item {
-    opacity: 0.3;
+    color: var(--md-outline);
     font-size: 0.85em;
 }
 
-/* Loading */
-.loading-spinner {
-    border: 2px solid var(--border-color);
+/* Active meal: tonal container tinted with the meal colour */
+.meal-section.active-meal .meal-card {
+    background-color: color-mix(in srgb, var(--meal-accent) 12%, var(--md-surface-container));
+}
+
+.meal-section.active-meal .menu-item {
+    border-bottom-color: color-mix(in srgb, var(--meal-accent) 20%, var(--md-outline-variant));
+}
+
+/* "Now" dot — solid, no glow */
+.active-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 10px;
     border-radius: 50%;
-    border-top: 2px solid var(--text-primary);
-    width: 24px;
-    height: 24px;
+    background-color: var(--meal-accent);
+}
+
+/* Per-meal accent */
+#meal-breakfast { --meal-accent: var(--accent-breakfast); }
+#meal-lunch     { --meal-accent: var(--accent-lunch); }
+#meal-snacks    { --meal-accent: var(--accent-snacks); }
+#meal-dinner    { --meal-accent: var(--accent-dinner); }
+
+/* Lunch red is dark on dark surfaces; lift it for text */
+#meal-lunch .meal-title,
+#meal-lunch .item-type {
+    color: #FF6E6A;
+}
+
+/* Loading — M3 circular progress */
+.loading-spinner {
+    border: 4px solid var(--md-surface-container-highest);
+    border-top-color: var(--md-primary);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
     animation: spin 1s linear infinite;
     margin: 40px auto;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    to { transform: rotate(360deg); }
 }
 
-/* Active Meal Indicator */
-.active-indicator {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    margin-right: 10px;
-    border-radius: 50%;
-    box-shadow: 0 0 10px currentColor;
-    animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 10px currentColor; }
-    50% { opacity: 0.6; box-shadow: 0 0 20px currentColor; }
-}
-
-/* Footer */
 .footer {
     margin-top: auto;
     padding-top: var(--spacing-lg);
     text-align: center;
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    opacity: 0.7;
-}
-
-/* ==========================================
-   MEAL-SPECIFIC COLORS
-   ========================================== */
-
-/* Breakfast — Gold/Yellow */
-#meal-breakfast .meal-title {
-    color: var(--accent-breakfast);
-    text-shadow: 0 0 12px rgba(245, 191, 66, 0.4);
-}
-
-#meal-breakfast .item-type {
-    color: var(--accent-breakfast);
-}
-
-#meal-breakfast .active-indicator {
-    background-color: var(--accent-breakfast);
-    box-shadow: 0 0 10px var(--accent-breakfast);
-}
-
-#meal-breakfast.active-meal .meal-card {
-    border-color: var(--accent-breakfast);
-    box-shadow: 0 0 20px rgba(245, 191, 66, 0.2);
-    background-color: rgba(245, 191, 66, 0.05);
-}
-
-/* Lunch — Red */
-#meal-lunch .meal-title {
-    color: var(--accent-lunch);
-    text-shadow: 0 0 12px rgba(229, 57, 53, 0.4);
-}
-
-#meal-lunch .item-type {
-    color: var(--accent-lunch);
-}
-
-#meal-lunch .active-indicator {
-    background-color: var(--accent-lunch);
-    box-shadow: 0 0 10px var(--accent-lunch);
-}
-
-#meal-lunch.active-meal .meal-card {
-    border-color: var(--accent-lunch);
-    box-shadow: 0 0 20px rgba(229, 57, 53, 0.2);
-    background-color: rgba(229, 57, 53, 0.05);
-}
-
-/* Snacks — Sky Blue */
-#meal-snacks .meal-title {
-    color: var(--accent-snacks);
-    text-shadow: 0 0 12px rgba(92, 202, 232, 0.5);
-}
-
-#meal-snacks .item-type {
-    color: var(--accent-snacks);
-}
-
-#meal-snacks .active-indicator {
-    background-color: var(--accent-snacks);
-    box-shadow: 0 0 10px var(--accent-snacks);
-}
-
-#meal-snacks.active-meal .meal-card {
-    border-color: var(--accent-snacks);
-    box-shadow: 0 0 20px rgba(92, 202, 232, 0.25);
-    background-color: rgba(92, 202, 232, 0.06);
-}
-
-/* Dinner — Vivid Blue */
-#meal-dinner .meal-title {
-    color: var(--accent-dinner);
-    text-shadow: 0 0 12px rgba(92, 122, 234, 0.5);
-}
-
-#meal-dinner .item-type {
-    color: var(--accent-dinner);
-}
-
-#meal-dinner .active-indicator {
-    background-color: var(--accent-dinner);
-    box-shadow: 0 0 10px var(--accent-dinner);
-}
-
-#meal-dinner.active-meal .meal-card {
-    border-color: var(--accent-dinner);
-    box-shadow: 0 0 20px rgba(92, 122, 234, 0.3);
-    background-color: rgba(92, 122, 234, 0.08);
+    color: var(--md-on-surface-variant);
+    font-size: 0.75rem;
+    letter-spacing: 0.4px;
 }
 
 /* ==========================================
@@ -461,7 +397,7 @@ h1 {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    color: var(--text-secondary);
+    color: var(--md-on-surface-variant);
     opacity: 0;
     font-size: 0.75rem;
     letter-spacing: 0.5px;
@@ -477,8 +413,8 @@ h1 {
 
 @keyframes swipeHintFade {
     0% { opacity: 0; }
-    20% { opacity: 0.5; }
-    80% { opacity: 0.5; }
+    20% { opacity: 0.6; }
+    80% { opacity: 0.6; }
     100% { opacity: 0; display: none; }
 }
 
@@ -488,153 +424,128 @@ h1 {
 }
 
 /* ==========================================
-   UPDATE NOTIFICATION
+   BUTTONS (M3 filled / text)
    ========================================== */
-.update-notification {
+.pwa-btn,
+.update-btn {
+    height: 40px;
+    padding: 0 20px;
+    border: none;
+    border-radius: var(--md-shape-full);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    cursor: pointer;
+}
+
+.pwa-btn {
+    background-color: var(--md-primary);
+    color: var(--md-on-primary);
+}
+
+/* Text button inside the inverse-surface snackbar */
+.update-btn {
+    background: transparent;
+    color: #7A5900; /* primary tone for light surfaces */
+    padding: 0 12px;
+}
+
+/* ==========================================
+   SNACKBARS (update + install prompt)
+   ========================================== */
+.update-notification,
+.pwa-prompt {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: rgba(20, 20, 20, 0.85);
-    backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--color-3);
-    padding: 16px;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(245, 191, 66, 0.3);
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 32px);
+    max-width: 568px;
+    min-height: 48px;
+    background-color: var(--md-inverse-surface);
+    color: var(--md-inverse-on-surface);
+    padding: 4px 8px 4px 16px;
+    border-radius: 4px;
+    box-shadow: var(--md-elevation-3);
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
+}
+
+.update-notification {
     z-index: 1000;
-    animation: slideIn 0.3s ease-out;
+    animation: snackIn 0.3s var(--md-ease);
 }
 
 .update-notification.hidden {
     display: none;
 }
 
-.update-notification p {
+.update-notification p,
+.pwa-prompt p {
+    flex: 1;
     margin: 0;
-    font-size: 0.9rem;
-    color: var(--text-primary);
+    font-size: 0.875rem;
+    letter-spacing: 0.25px;
+    color: var(--md-inverse-on-surface);
 }
 
-.update-btn {
-    background-color: var(--color-3);
-    color: #000;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.update-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 0 10px rgba(245, 191, 66, 0.5);
-}
-
-.update-btn:active {
-    transform: scale(0.95);
-}
-
-@keyframes slideIn {
+@keyframes snackIn {
     from {
-        transform: translateY(100px);
+        transform: translate(-50%, 100px);
         opacity: 0;
     }
     to {
-        transform: translateY(0);
+        transform: translate(-50%, 0);
         opacity: 1;
     }
 }
 
-/* ==========================================
-   PWA PROMPT & MODAL
-   ========================================== */
 .pwa-prompt {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(10, 10, 10, 0.85);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid var(--color-1);
-    box-shadow: 0 4px 16px rgba(92, 202, 232, 0.2);
-    padding: 12px 16px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
     z-index: 900;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.4s var(--md-ease), opacity 0.3s var(--md-ease);
 }
 
 .pwa-prompt[aria-hidden="true"] {
     transform: translate(-50%, 150px);
     opacity: 0;
+    pointer-events: none;
 }
 
-.pwa-prompt p {
-    font-size: 0.9rem;
-    color: var(--text-primary);
-    font-weight: 500;
-    margin: 0;
-}
-
-.pwa-btn {
-    background-color: var(--color-1);
-    color: #000;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.pwa-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 0 10px rgba(92, 202, 232, 0.4);
-}
-
-.pwa-btn:active {
-    transform: scale(0.95);
+.pwa-prompt .pwa-btn {
+    background: transparent;
+    color: #7A5900;
+    padding: 0 12px;
 }
 
 .pwa-close-btn {
+    width: 40px;
+    height: 40px;
     background: transparent;
     border: none;
-    color: var(--text-secondary);
-    font-size: 1.2rem;
+    border-radius: var(--md-shape-full);
+    color: var(--md-inverse-on-surface);
+    font-size: 1.4rem;
     cursor: pointer;
-    padding: 0 4px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.pwa-close-btn:hover {
-    color: var(--text-primary);
-}
-
+/* ==========================================
+   DIALOG
+   ========================================== */
 .pwa-modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    inset: 0;
+    background-color: var(--md-scrim);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1001;
     opacity: 1;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.25s var(--md-ease);
 }
 
 .pwa-modal[aria-hidden="true"] {
@@ -643,42 +554,38 @@ h1 {
 }
 
 .pwa-modal-content {
-    background-color: rgba(20, 20, 20, 0.9);
-    border: 1px solid var(--border-color);
+    background-color: var(--md-surface-container-high);
     padding: var(--spacing-lg);
-    border-radius: 16px;
-    max-width: 90%;
+    border-radius: var(--md-shape-xl);
     width: 320px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-    text-align: center;
-    position: relative;
+    max-width: calc(100% - 32px);
+    box-shadow: var(--md-elevation-3);
     transform: scale(1);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.3s var(--md-ease);
 }
 
 .pwa-modal[aria-hidden="true"] .pwa-modal-content {
-    transform: scale(0.95);
+    transform: scale(0.92);
 }
 
 .pwa-modal-content h2 {
-    color: var(--text-primary);
+    color: var(--md-on-surface);
     margin-bottom: var(--spacing-md);
-    font-size: 1.2rem;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    font-size: 1.5rem; /* M3 headline-small */
+    font-weight: 400;
 }
 
 .pwa-modal-content p {
-    color: var(--text-secondary);
+    color: var(--md-on-surface-variant);
     margin-bottom: var(--spacing-md);
-    font-size: 0.9rem;
+    font-size: 0.875rem;
 }
 
 .pwa-modal-content ol {
-    text-align: left;
-    color: var(--text-primary);
+    color: var(--md-on-surface-variant);
     margin-bottom: var(--spacing-lg);
     padding-left: var(--spacing-lg);
-    font-size: 0.9rem;
+    font-size: 0.875rem;
 }
 
 .pwa-modal-content li {
@@ -687,5 +594,22 @@ h1 {
 }
 
 .pwa-modal-content li strong {
-    color: var(--color-1);
+    color: var(--md-on-surface);
+}
+
+.pwa-modal-content .pwa-btn {
+    display: block;
+    margin-left: auto;
+}
+
+/* ==========================================
+   CONFETTI
+   ========================================== */
+.confetti-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 2000;
 }

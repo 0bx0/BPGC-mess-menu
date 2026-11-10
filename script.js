@@ -197,8 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
             menuContainer.appendChild(section);
         });
 
-        // Setup Intersection Observer for Dynamic Background Glow
-        setupBackgroundObserver();
+        setupBiryaniConfetti();
     };
 
     //  Given a string with two items separated by a slash, calculates and
@@ -211,28 +210,97 @@ document.addEventListener('DOMContentLoaded', () => {
         return [ items[activeIndex], items[1-activeIndex] ];
     }
 
-    // Observer to track which meal section is currently visible to change the BG blur
-    const setupBackgroundObserver = () => {
-        const sections = document.querySelectorAll('.meal-section');
-        const observerOptions = {
-            root: null,
-            rootMargin: '-10% 0px -40% 0px',
-            threshold: 0.1
-        };
+    // --- Wednesday Biryani Confetti ---
+    // On Wednesdays, throw confetti when a biryani item scrolls into view.
+    let biryaniObserver = null;
 
-        const mealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const category = entry.target.id.replace('meal-', '');
-                    const formattedCategory = category.charAt(0).toUpperCase() + category.slice(1);
-                    document.body.setAttribute('data-scroll-meal', formattedCategory);
-                }
-            });
-        }, observerOptions);
+    const setupBiryaniConfetti = () => {
+        if (biryaniObserver) biryaniObserver.disconnect();
+        if (viewDate.getDay() !== 3) return; // 3 = Wednesday
 
-        sections.forEach(section => {
-            mealObserver.observe(section);
+        const targets = [...menuContainer.querySelectorAll('.menu-item')]
+            .filter(row => /biri?yani/i.test(row.textContent));
+        if (!targets.length) return;
+
+        biryaniObserver = new IntersectionObserver((entries) => {
+            if (entries.some(entry => entry.isIntersecting)) {
+                biryaniObserver.disconnect();
+                launchConfetti();
+            }
+        }, { threshold: 0.75 });
+
+        targets.forEach(target => biryaniObserver.observe(target));
+    };
+
+    const launchConfetti = () => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const canvas = document.createElement('canvas');
+        canvas.className = 'confetti-canvas';
+        const dpr = window.devicePixelRatio || 1;
+        const W = window.innerWidth;
+        const H = window.innerHeight;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        document.body.appendChild(canvas);
+
+        const ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+
+        const colors = ['#5CCAE8', '#E53935', '#F5BF42', '#5C7AEA', '#FFFFFF'];
+        const pieces = Array.from({ length: 180 }, (_, i) => {
+            const fromLeft = i % 2 === 0;
+            const angle = ((fromLeft ? -60 : -120) + (Math.random() * 40 - 20)) * Math.PI / 180;
+            const speed = 10 + Math.random() * 9;
+            return {
+                x: fromLeft ? -10 : W + 10,
+                y: H * 0.8,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                w: 6 + Math.random() * 6,
+                h: 4 + Math.random() * 4,
+                rot: Math.random() * Math.PI,
+                vr: (Math.random() - 0.5) * 0.3,
+                tilt: Math.random() * Math.PI * 2,
+                color: colors[i % colors.length]
+            };
         });
+
+        const DURATION = 3200;
+        const FADE = 700;
+        const start = performance.now();
+        let last = start;
+
+        const frame = (now) => {
+            const t = now - start;
+            const step = Math.min((now - last) / 16.67, 3); // normalise to 60fps
+            last = now;
+
+            ctx.clearRect(0, 0, W, H);
+            ctx.globalAlpha = t > DURATION - FADE ? Math.max(0, (DURATION - t) / FADE) : 1;
+
+            pieces.forEach(p => {
+                p.vy += 0.3 * step;
+                p.vx *= Math.pow(0.985, step);
+                p.vy *= Math.pow(0.985, step);
+                p.x += p.vx * step;
+                p.y += p.vy * step;
+                p.rot += p.vr * step;
+                p.tilt += 0.12 * step;
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot);
+                ctx.scale(1, Math.cos(p.tilt));
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                ctx.restore();
+            });
+
+            if (t < DURATION) requestAnimationFrame(frame);
+            else canvas.remove();
+        };
+        requestAnimationFrame(frame);
     };
 
     // Check if meal is active or upcoming
