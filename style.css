@@ -32,6 +32,7 @@
     --md-scrim: rgba(0, 0, 0, 0.6);
 
     /* Elevation (used sparingly, M3 prefers tonal elevation) */
+    --md-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px 1px rgba(0, 0, 0, 0.2);
     --md-elevation-2: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
     --md-elevation-3: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
 
@@ -68,6 +69,8 @@
 body {
     font-family: var(--font-body);
     background-color: var(--md-surface);
+    background-image: linear-gradient(180deg, color-mix(in srgb, var(--md-primary) 7%, var(--md-surface)) 0, var(--md-surface) 320px);
+    background-repeat: no-repeat;
     color: var(--md-on-surface);
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
@@ -151,7 +154,8 @@ body {
 
 h1 {
     font-family: var(--font-heading);
-    font-weight: 400;
+    font-weight: 500;
+    letter-spacing: -0.5px;
     font-size: 2.25rem; /* M3 headline-large */
     line-height: 1.2;
     color: var(--md-on-surface);
@@ -159,7 +163,8 @@ h1 {
 }
 
 .subtitle {
-    color: var(--md-on-surface-variant);
+    color: var(--md-primary);
+    font-weight: 500;
     font-size: 1rem;
     letter-spacing: 0.15px;
 }
@@ -193,6 +198,12 @@ h1 {
 
 .current-view-label {
     font-family: var(--font-heading);
+    height: 32px;
+    padding: 0 16px;
+    display: inline-flex;
+    align-items: center;
+    border-radius: var(--md-shape-full);
+    background-color: color-mix(in srgb, var(--md-primary) 18%, var(--md-surface-container-high));
     font-size: 1rem;
     font-weight: 500;
     letter-spacing: 0.15px;
@@ -208,7 +219,7 @@ h1 {
 }
 
 .meal-section {
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 20px;
     opacity: 0;
     transform: translateY(16px);
     animation: fadeSlideUp 0.4s var(--md-ease) forwards;
@@ -232,51 +243,109 @@ h1 {
     }
 }
 
+/* Card = one meal. Header is a tonal band with an icon. */
+.meal-card {
+    background-color: var(--md-surface-container-low);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--md-elevation-1);
+    outline: 1px solid var(--md-outline-variant);
+    outline-offset: -1px;
+    transition: box-shadow 0.3s var(--md-ease), outline-color 0.3s var(--md-ease);
+}
+
 .meal-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--spacing-sm);
-    padding: 0 var(--spacing-sm);
+    gap: 14px;
+    padding: 16px 16px 14px;
+    background:
+        linear-gradient(135deg,
+            color-mix(in srgb, var(--meal-accent) 26%, var(--md-surface-container-low)) 0%,
+            color-mix(in srgb, var(--meal-accent) 8%, var(--md-surface-container-low)) 100%);
+    position: relative;
+}
+
+.meal-icon {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 auto;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background-color: var(--meal-accent);
+    color: var(--meal-on-accent, #111);
+    box-shadow: var(--md-elevation-1);
+}
+
+.meal-title-group {
+    flex: 1;
+    min-width: 0;
 }
 
 .meal-title {
     font-family: var(--font-heading);
     font-size: 1.375rem; /* M3 title-large */
     font-weight: 500;
-    color: var(--meal-accent, var(--md-on-surface));
-    display: flex;
-    align-items: center;
+    line-height: 1.2;
+    color: var(--md-on-surface);
 }
 
-/* Assist-chip style timing */
 .meal-time {
-    font-size: 0.875rem;
+    margin-top: 2px;
+    font-size: 0.8125rem;
     font-weight: 500;
-    letter-spacing: 0.1px;
-    color: var(--md-on-surface-variant);
-    height: 32px;
+    letter-spacing: 0.4px;
+    font-variant-numeric: tabular-nums;
+    color: var(--meal-accent-text, var(--meal-accent));
+}
+
+/* "Now" badge on the active meal */
+.meal-section.active-meal .meal-header::after {
+    content: 'Now';
+    flex: 0 0 auto;
+    height: 28px;
     padding: 0 12px;
     display: inline-flex;
     align-items: center;
-    border: 1px solid var(--md-outline-variant);
-    border-radius: var(--md-shape-sm);
+    border-radius: var(--md-shape-full);
+    background-color: var(--meal-accent);
+    color: var(--meal-on-accent, #111);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
 }
 
-.meal-card {
-    background-color: var(--md-surface-container);
-    padding: 4px var(--spacing-md);
-    border-radius: var(--md-shape-lg);
-    transition: background-color 0.3s var(--md-ease);
+.meal-section.active-meal .meal-card {
+    outline: 2px solid var(--meal-accent);
+    outline-offset: -2px;
+    box-shadow: var(--md-elevation-3);
+}
+
+.meal-items {
+    padding: 4px 16px 8px;
 }
 
 .menu-item {
     display: flex;
-    align-items: baseline;
-    padding: 14px 0;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
     border-bottom: 1px solid var(--md-outline-variant);
     opacity: 0;
     animation: itemFadeIn 0.3s var(--md-ease) forwards;
+}
+
+/* Leading accent bullet */
+.menu-item::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background-color: var(--meal-accent);
+    opacity: 0.7;
 }
 
 .menu-item:nth-child(1) { animation-delay: 0.03s; }
@@ -307,63 +376,56 @@ h1 {
     border-bottom: none;
 }
 
-.item-type {
-    font-size: 0.75rem; /* M3 label-medium */
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: var(--meal-accent, var(--md-on-surface-variant));
-    flex: 0 0 auto;
-    min-width: 96px;
-    margin-right: 12px;
-}
-
 .item-name {
     color: var(--md-on-surface);
     font-size: 1rem; /* M3 body-large */
-    letter-spacing: 0.25px;
+    letter-spacing: 0.15px;
     flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+}
+
+/* The headline dish of each meal */
+.menu-item:first-child .item-name {
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+.menu-item:first-child::before {
+    width: 8px;
+    height: 8px;
+    opacity: 1;
+}
+
+.menu-item:has(.empty-item)::before {
+    opacity: 0.2;
 }
 
 .item-name.empty-item {
     color: var(--md-outline);
 }
 
+/* Alternate-week item as a small outlined chip */
 .inactive-item {
-    color: var(--md-outline);
-    font-size: 0.85em;
-}
-
-/* Active meal: tonal container tinted with the meal colour */
-.meal-section.active-meal .meal-card {
-    background-color: color-mix(in srgb, var(--meal-accent) 12%, var(--md-surface-container));
-}
-
-.meal-section.active-meal .menu-item {
-    border-bottom-color: color-mix(in srgb, var(--meal-accent) 20%, var(--md-outline-variant));
-}
-
-/* "Now" dot — solid, no glow */
-.active-indicator {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    margin-right: 10px;
-    border-radius: 50%;
-    background-color: var(--meal-accent);
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    color: var(--md-on-surface-variant);
+    height: 24px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--md-outline-variant);
+    border-radius: var(--md-shape-sm);
 }
 
 /* Per-meal accent */
-#meal-breakfast { --meal-accent: var(--accent-breakfast); }
-#meal-lunch     { --meal-accent: var(--accent-lunch); }
-#meal-snacks    { --meal-accent: var(--accent-snacks); }
-#meal-dinner    { --meal-accent: var(--accent-dinner); }
-
-/* Lunch red is dark on dark surfaces; lift it for text */
-#meal-lunch .meal-title,
-#meal-lunch .item-type {
-    color: #FF6E6A;
-}
+#meal-breakfast { --meal-accent: var(--accent-breakfast); --meal-on-accent: #3F2E00; }
+#meal-lunch     { --meal-accent: var(--accent-lunch);     --meal-on-accent: #FFFFFF; --meal-accent-text: #FF8A80; }
+#meal-snacks    { --meal-accent: var(--accent-snacks);    --meal-on-accent: #00363F; }
+#meal-dinner    { --meal-accent: var(--accent-dinner);    --meal-on-accent: #FFFFFF; --meal-accent-text: #9AAEFF; }
 
 /* Loading — M3 circular progress */
 .loading-spinner {

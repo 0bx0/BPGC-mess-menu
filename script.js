@@ -14,6 +14,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextBtn = document.getElementById('next-day');
     const viewLabel = document.querySelector('.current-view-label');
 
+    // Material-style meal icons (inline so they work offline)
+    const svg = (d) => `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">${d}</svg>`;
+    const mealIcons = {
+        // free_breakfast
+        'Breakfast': svg('<path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.9 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>'),
+        // restaurant
+        'Lunch': svg('<path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/>'),
+        // cookie
+        'Snacks': svg('<path fill-rule="evenodd" d="M12 3a9 9 0 1 0 9 9 3 3 0 0 1-3.5-3A3 3 0 0 1 14 5.5 3 3 0 0 1 12 3zM8 9.5a1.5 1.5 0 1 0 0 .01zM9.5 15a1.5 1.5 0 1 0 0 .01zM15 16a1.5 1.5 0 1 0 0 .01zM12.5 11.5a1 1 0 1 0 0 .01z"/>'),
+        // dark_mode
+        'Dinner': svg('<path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>')
+    };
+
     // Meal Timings (24h format)
     const timings = {
         'Breakfast': { start: '07:30', end: '09:30' },
@@ -133,26 +146,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const header = document.createElement('div');
             header.className = 'meal-header';
 
+            const icon = document.createElement('div');
+            icon.className = 'meal-icon';
+            icon.innerHTML = mealIcons[category];
+
             const titleGroup = document.createElement('div');
-            if (section.classList.contains('active-meal')) {
-                titleGroup.innerHTML = `<span class="active-indicator"></span>${category}`;
-            } else {
-                titleGroup.textContent = category;
-            }
-            titleGroup.className = 'meal-title';
+            titleGroup.className = 'meal-title-group';
+
+            const title = document.createElement('div');
+            title.className = 'meal-title';
+            title.textContent = category;
 
             const time = document.createElement('div');
             time.className = 'meal-time';
             const timing = timings[category];
-            time.textContent = `${timing.start} - ${timing.end}`;
+            time.textContent = `${timing.start} – ${timing.end}`;
 
+            titleGroup.appendChild(title);
+            titleGroup.appendChild(time);
+            header.appendChild(icon);
             header.appendChild(titleGroup);
-            header.appendChild(time);
 
             const card = document.createElement('div');
             card.className = 'meal-card';
 
-            items.forEach(item => {   
+            const list = document.createElement('div');
+            list.className = 'meal-items';
+
+            items.forEach(item => {
                 const row = document.createElement('div');
                 row.className = 'menu-item';
                 
@@ -172,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const [activeItemText, inactiveItemText] = getActiveInactiveItems(foodItem);
                     activeItem.textContent = activeItemText + ' ';
-                    inactiveItem.textContent = '(' + inactiveItemText + ')';
+                    inactiveItem.textContent = 'next week: ' + inactiveItemText;
 
                     activeItem.appendChild(inactiveItem);
                     row.appendChild(activeItem);
@@ -189,10 +210,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     name.textContent = foodItem;
                     row.appendChild(name);
                 }
-                card.appendChild(row);
+                list.appendChild(row);
             });
 
-            section.appendChild(header);
+            card.appendChild(header);
+            card.appendChild(list);
             section.appendChild(card);
             menuContainer.appendChild(section);
         });
@@ -359,12 +381,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Ensure class is added
                 document.querySelectorAll('.meal-section').forEach(s => s.classList.remove('active-meal'));
                 section.classList.add('active-meal');
-
-                // Add indicator if missing
-                const title = section.querySelector('.meal-title');
-                if (title && !title.querySelector('.active-indicator')) {
-                    title.innerHTML = `<span class="active-indicator"></span>${state.category}`;
-                }
 
                 setTimeout(() => {
                     section.scrollIntoView({ behavior: 'smooth', block: 'center' });
